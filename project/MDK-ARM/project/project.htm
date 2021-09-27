@@ -3,7 +3,7 @@
 <title>Static Call Graph - [project\project.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image project\project.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Sep 23 09:33:50 2021
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Sep 27 08:22:43 2021
 <BR><P>
 <H3>Maximum Stack Usage =        800 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -516,9 +516,9 @@ Global Symbols
 <P><STRONG><a name="[7a]"></a>BSP_SD_Init</STRONG> (Thumb, 42 bytes, Stack size 8 bytes, bsp_driver_sd.o(i.BSP_SD_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 204<LI>Call Chain = BSP_SD_Init &rArr; HAL_SD_Init &rArr; HAL_SD_InitCard &rArr; SD_InitCard &rArr; SDMMC_CmdSetRelAdd &rArr; SDMMC_GetCmdResp6
 </UL>
-<BR>[Calls]<UL><LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SD_Init
+<BR>[Calls]<UL><LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BSP_SD_IsDetected
+<LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SD_Init
 <LI><a href="#[7d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SD_ConfigWideBusOperation
-<LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BSP_SD_IsDetected
 </UL>
 <BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SD_initialize
 </UL>
@@ -613,13 +613,13 @@ Global Symbols
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_OscConfig
 <LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_RCC_ClockConfig
 <LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_PWREx_EnableOverDrive
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 <LI><a href="#[da]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SD_FindSCR
 <LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_Delay
 <LI><a href="#[ad]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SPI_TransmitReceive
 <LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SPI_WaitFlagStateUntilTimeout
 <LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SD_WriteBlocks
 <LI><a href="#[7f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HAL_SD_ReadBlocks
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_WaitOnFlagUntilTimeout
 </UL>
 
 <P><STRONG><a name="[b9]"></a>HAL_IncTick</STRONG> (Thumb, 12 bytes, Stack size 0 bytes, stm32f4xx_hal.o(i.HAL_IncTick))

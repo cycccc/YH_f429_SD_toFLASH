@@ -38,8 +38,11 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define FILE_NAME           "beijing.bin"
-#define FLASH_ADDRESS       10
+//私人定义
+//文件名称
+#define FILE_NAME           "NOR.bin"
+//需要写入到FLASH中的起始地址
+#define FLASH_ADDRESS       0
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
