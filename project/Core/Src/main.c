@@ -110,154 +110,125 @@ int main(void)
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
 
+    printf("> 程序开始..\n");
+
     //flash 初始化
+    printf("> FLASH 初始化进行中..\n");
     W25QXX_Init();
 
-		printf("> 程序正常运行，请按KEI_1按键进行程序COPY..\n");
-
-
-    /* USER CODE END 2 */
-
-    /* Infinite loop */
-    /* USER CODE BEGIN WHILE */
-    while (1)
+    if(W25Qxx_Type != 0)
     {
-        /* USER CODE END WHILE */
+        printf("> FLASH 初始化成功！\n");
 
-        /* USER CODE BEGIN 3 */
-        if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET) //检测按键按下
+        printf("> SD卡 初始化进行中..\n");
+        retSD = f_mount(&SDFatFS, SDPath, 1); //挂载SD卡
+
+        if(retSD == FR_OK)
         {
-					printf("> 程序开始..\n");
-            while(1)
+            printf("> SD卡 挂载成功！\n");
+            printf("> 程序正常运行，请按KEI_1按键进行程序COPY..\n");
+            /* USER CODE END 2 */
+
+            /* Infinite loop */
+            /* USER CODE BEGIN WHILE */
+            while (1)
             {
+                /* USER CODE END WHILE */
 
-                //接下来就是正常的程序
-                if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_RESET)  //检测按键弹出，证明1次按下已结束
+                /* USER CODE BEGIN 3 */
+                if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET) //检测按键按下
                 {
-                    //以下，开始
-                    //-- > FILE_NAME
-                    //-- > FLASH_ADDRESS
-                    uint8_t SD_TO_Flash_buf[512] = {0};
-                    uint32_t read_len = 0;
-                    uint32_t freq = 0;
-                    uint32_t flash_address = FLASH_ADDRESS;
-                    uint8_t flash_read_check = 0;
-                    uint8_t sd_read_check = 0;
-
-                    retSD = f_mount(&SDFatFS, SDPath, 1); //挂载SD卡
-
-                    if(retSD == FR_OK)
+                    while(1)
                     {
-                        printf("> SD卡挂载成功！\n");
-                        retSD = f_open(&SDFile, FILE_NAME, FA_READ); //打开文件  文件属性为只读属性
 
-                        if(retSD == FR_OK)
+                        //接下来就是正常的程序
+                        if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_RESET)  //检测按键弹出，证明1次按下已结束
                         {
-														printf("> 文件打开成功！开始进入写入文件阶段...\n");
-                            do
+                            //以下，开始
+                            //-- > FILE_NAME
+                            //-- > FLASH_ADDRESS
+                            uint8_t SD_TO_Flash_buf[512] = {0};
+                            uint32_t read_len = 0;
+                            uint32_t freq = 0;
+                            uint32_t flash_address = FLASH_ADDRESS;
+                            uint8_t flash_read_check = 0;
+                            uint8_t check_flag = 0;
+
+                            retSD = f_open(&SDFile, FILE_NAME, FA_READ); //打开文件  文件属性为只读属性
+
+                            if(retSD == FR_OK)
                             {
-                                retSD = f_read(&SDFile, SD_TO_Flash_buf, 512, &read_len); //读取数据
-                                freq++;
+                                printf("> 文件打开成功！开始进入写入文件阶段...\n");
 
-                                if(retSD == FR_OK)
-                                {
-                                    if(read_len != 0)   //确保正好等于0
-                                    {
-                                        W25QXX_Write(SD_TO_Flash_buf, flash_address, read_len); //写入flash
-                                        flash_address += read_len;
-                                    }
-                                }
-                                else
-                                {
-                                    printf("> 文件读取错误！错误发生在第 %d 次读取。\n", freq);
-                                    read_len = 0xf01e;
-                                    flash_address = 0xe10f;
-                                    freq = 0xff;
-                                    break;
-                                }
-                            }
-                            while(read_len == 512);
-
-                            //都不符合，则证明写入成功
-                            if(!((read_len == 0xf01e) && (flash_address == 0xe10f) && (freq == 0xff)))
-                            {
-                                printf("> 文件写入成功！开始进入文件校对阶段...\n");
-                                f_rewind(&SDFile);   //使指针从新指向文件开头
-                                flash_address = FLASH_ADDRESS;   //flash地址恢复之开始
-                                freq = 0;
-
-                                //循环对比
                                 do
                                 {
-                                    retSD = f_read(&SDFile, &sd_read_check, 1, &read_len); //读取数据
+                                    retSD = f_read(&SDFile, SD_TO_Flash_buf, 512, &read_len); //读取数据
                                     freq++;
 
                                     if(retSD == FR_OK)
                                     {
-                                        if(read_len != 0)
+                                        if(read_len != 0)   //确保正好等于0
                                         {
-                                            W25QXX_Read(&flash_read_check, flash_address, 1); //flash读取一个字节
-                                            flash_address += read_len;
+                                            W25QXX_Write(SD_TO_Flash_buf, flash_address, read_len); //写入flash
 
-                                            if(sd_read_check == flash_read_check)
+                                            //写入完成后，直接进入校验
+                                            for(uint32_t read_len_check = 0; read_len_check < read_len; read_len_check++)
                                             {
-                                                sd_read_check = 0;
-                                                flash_read_check = 0;
+                                                W25QXX_Read(&flash_read_check, flash_address + read_len_check, 1); //flash读取一个字节
+
+                                                if(flash_read_check != SD_TO_Flash_buf[read_len_check])
+                                                {
+                                                    check_flag = 1;
+                                                    break;
+                                                }
                                             }
-                                            else
+
+                                            if(check_flag == 1)
                                             {
                                                 printf("> 文件校验错误！错误发生在第 %d 次校验。\n", freq);
-                                                read_len = 0xf01e;
-                                                flash_address = 0xe10f;
-                                                freq = 0xff;
                                                 break;
                                             }
 
+                                            flash_address += read_len;
                                         }
                                     }
                                     else
                                     {
                                         printf("> 文件读取错误！错误发生在第 %d 次读取。\n", freq);
-                                        read_len = 0xf01e;
-                                        flash_address = 0xe10f;
-                                        freq = 0xff;
                                         break;
                                     }
-
                                 }
-                                while(read_len != 0);
+                                while(read_len == 512);
 
                                 //判断是否校验成功
-                                if(!((read_len == 0xf01e) && (flash_address == 0xe10f) && (freq == 0xff)))
+                                if(check_flag == 0)
                                 {
                                     printf("> 文件校验成功！本次写入结束! \n");
                                     printf("> flash 接下来的地址为：%d\n", flash_address);
                                 }
+
+                                f_close(&SDFile);  //关闭文件
                             }
-														f_close(&SDFile);  //关闭文件
+                            else
+                            {
+                                printf("> 文件无法打开，请确认文件完好或是否存在！\n");
+                            }
+
+                            //以上结束
+                            break;
                         }
-                        else
-                        {
-                            printf("> 文件无法打开，请确认文件完好或是否存在！\n");
-                        }
-												f_mount(NULL,SDPath,1);  //取消挂载
                     }
-                    else
-                    {
-                        printf("> SD卡挂载失败，请重试！\n");
-                    }
-
-                    //以上结束
-
-
-                    break;
                 }
             }
         }
-
-				
-				
-				
+        else
+        {
+            printf("> SD卡挂载失败，请重试！\n");
+        }
+    }
+    else
+    {
+        printf("> FLASH 初始化失败，请重试！\n");
     }
 
     /* USER CODE END 3 */
@@ -333,7 +304,7 @@ void copy_From_SD_TO_Flash(void)
   * @param  htim : TIM handle
   * @retval None
   */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef * htim)
 {
     /* USER CODE BEGIN Callback 0 */
 
