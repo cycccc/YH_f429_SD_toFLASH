@@ -40,7 +40,7 @@
 /* USER CODE BEGIN PD */
 //私人定义
 //文件名称
-#define FILE_NAME           "NOR.bin"
+#define FILE_NAME           "all.bin"
 //需要写入到FLASH中的起始地址
 #define FLASH_ADDRESS       0
 /* USER CODE END PD */

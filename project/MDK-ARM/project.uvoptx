@@ -163,7 +163,23 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>../Core/Src/main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\\../Core/Src/main.c\113</Expression>
+          <Expression>\\project\../Core/Src/main.c\113</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>181</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134235268</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>../Core/Src/main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\project\../Core/Src/main.c\181</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -171,6 +187,16 @@
           <count>0</count>
           <WinNumber>1</WinNumber>
           <ItemText>W25Qxx_Type</ItemText>
+        </Ww>
+        <Ww>
+          <count>1</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>SD_TO_Flash_buf</ItemText>
+        </Ww>
+        <Ww>
+          <count>2</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>flash_read_check</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
