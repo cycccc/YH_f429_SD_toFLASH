@@ -126,7 +126,9 @@ int main(void)
         if(retSD == FR_OK)
         {
             printf("> SD卡 挂载成功！\n");
-            printf("> 程序正常运行，请按KEI_1按键进行程序COPY..\n");
+            printf("> 程序正常运行..\n");
+            printf("> 请按KEI_1按键进行程序COPY..\n");
+            printf("> 请按KEI_2按键进行 FLASH 擦除..\n");
             /* USER CODE END 2 */
 
             /* Infinite loop */
@@ -218,6 +220,26 @@ int main(void)
                             break;
                         }
                     }
+
+                    printf("> 请按KEI_1按键进行程序COPY..\n");
+                    printf("> 请按KEI_2按键进行 FLASH 擦除..\n");
+                }
+
+                if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_SET) //检测按键按下
+                {
+                    while(1)
+                    {
+                        if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_RESET)  //检测按键弹出，证明1次按下已结束
+                        {
+                            printf("> 正在擦除 FLASH 中..\n");
+                            W25QXX_ChipErase();
+                            printf("> FLASH 擦除结束! \n");
+                            break;
+                        }
+                    }
+
+                    printf("> 请按KEI_1按键进行程序COPY..\n");
+                    printf("> 请按KEI_2按键进行 FLASH 擦除..\n");
                 }
             }
         }
