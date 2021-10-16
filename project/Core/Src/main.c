@@ -183,6 +183,8 @@ int main(void)
                                                     check_flag = 1;
                                                     break;
                                                 }
+
+                                                flash_read_check = 0;
                                             }
 
                                             if(check_flag == 1)
